@@ -82,9 +82,9 @@ function TemplateCard({ template, students, onEdit, onDelete }) {
       </CardHeader>
       <CardContent className="space-y-4 pt-0">
         {/* Raw template */}
-        <div className="rounded-lg bg-muted/60 p-3.5 overflow-hidden">
-          <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide mb-1.5">Template</p>
-          <p className="text-sm text-foreground/70 line-clamp-3 break-words leading-relaxed">{template.body}</p>
+        <div className="rounded-lg bg-zinc-100 p-3.5 overflow-hidden">
+          <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-1.5">Template</p>
+          <p className="text-sm text-zinc-600 line-clamp-3 break-words leading-relaxed">{template.body}</p>
         </div>
 
         {/* Student selector */}
@@ -107,9 +107,9 @@ function TemplateCard({ template, students, onEdit, onDelete }) {
 
         {/* Preview */}
         {student && (
-          <div className="rounded-lg bg-muted p-3.5 overflow-hidden">
-            <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wide mb-2">Preview</p>
-            <p className="text-sm text-foreground whitespace-pre-line break-words leading-relaxed">{preview}</p>
+          <div className="rounded-lg bg-zinc-100 p-3.5 overflow-hidden">
+            <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-wide mb-2">Preview</p>
+            <p className="text-sm text-zinc-700 whitespace-pre-line break-words leading-relaxed">{preview}</p>
           </div>
         )}
 

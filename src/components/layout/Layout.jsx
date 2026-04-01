@@ -1,7 +1,7 @@
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, Link, useLocation } from "react-router-dom";
 import {
   RiDashboardLine, RiGroupLine, RiCalendarLine,
-  RiBankCardLine, RiMessage2Line, RiGraduationCapLine,
+  RiBankCardLine, RiMessage2Line,
 } from "@remixicon/react";
 import { cn } from "@/lib/utils";
 
@@ -68,15 +68,13 @@ export default function Layout({ children }) {
       {/* Sidebar — desktop only */}
       <aside className="hidden md:flex flex-col w-60 shrink-0 border-r border-border bg-background sticky top-0 h-screen">
         {/* Logo */}
-        <div className="flex items-center gap-2.5 px-5 py-5 border-b border-border">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <RiGraduationCapLine className="h-4 w-4 text-white" />
-          </div>
+        <Link to="/" className="flex items-center gap-2.5 px-5 py-4 border-b border-border hover:bg-muted/40 transition-colors">
+          <img src="/logo.png" alt="SGTutor" className="h-9 w-9 object-contain rounded-md" />
           <div>
             <p className="font-semibold text-sm leading-none">SGTutor</p>
             <p className="text-xs text-muted-foreground mt-0.5">Tuition Manager</p>
           </div>
-        </div>
+        </Link>
 
         {/* Nav links */}
         <nav className="flex flex-col gap-1 p-3 flex-1">
@@ -95,10 +93,10 @@ export default function Layout({ children }) {
       <main className="flex-1 min-w-0 overflow-x-hidden">
         {/* Mobile header */}
         <header className="flex md:hidden items-center gap-2.5 px-4 py-3 border-b border-border bg-background sticky top-0 z-30">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-            <RiGraduationCapLine className="h-4 w-4 text-white" />
-          </div>
-          <p className="font-semibold text-sm">SGTutor</p>
+          <Link to="/" className="flex items-center gap-2">
+            <img src="/logo.png" alt="SGTutor" className="h-7 w-7 object-contain rounded-md" />
+            <p className="font-semibold text-sm">SGTutor</p>
+          </Link>
         </header>
 
         {/* Page content */}
