@@ -61,10 +61,10 @@ function StudentForm({ initial, onSave, onCancel }) {
           <Input placeholder="e.g. 91234567" value={form.parentPhone} onChange={set("parentPhone")} required />
         </div>
       </div>
-      <DialogFooter>
-        <Button type="button" variant="outline" onClick={onCancel}>Cancel</Button>
-        <Button type="submit" disabled={!valid}>Save Student</Button>
-      </DialogFooter>
+      <div className="flex gap-2 pt-1">
+        <Button type="button" variant="outline" className="flex-1" onClick={onCancel}>Cancel</Button>
+        <Button type="submit" className="flex-1" disabled={!valid}>Save Student</Button>
+      </div>
     </form>
   );
 }
@@ -77,7 +77,7 @@ function StudentCard({ student, onEdit, onDelete }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Avatar className="h-10 w-10 shrink-0">
-              <AvatarFallback className="bg-muted text-muted-foreground text-sm font-semibold">
+              <AvatarFallback>
                 {getInitials(student.name)}
               </AvatarFallback>
             </Avatar>

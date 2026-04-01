@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import {
   RiCheckLine, RiTimeLine, RiAlertLine,
   RiArrowDownSLine, RiExternalLinkLine, RiMoneyDollarCircleLine,
+  RiMessage2Line,
 } from "@remixicon/react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,7 +36,18 @@ function PaymentRow({ payment, session, student, onMarkPaid }) {
         </div>
         <div className="flex items-center gap-2 shrink-0">
           <span className="text-sm font-bold">{formatCurrency(payment.amount)}</span>
-          <Badge variant={payment.status}>{payment.status}</Badge>
+          {(payment.status === "pending" || payment.status === "overdue") && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="h-7 px-2 text-xs"
+              onClick={(e) => { e.stopPropagation(); onMarkPaid(payment); }}
+            >
+              <RiCheckLine className="h-3 w-3" />
+              Paid
+            </Button>
+          )}
+          {payment.status === "paid" && <Badge variant={payment.status}>{payment.status}</Badge>}
           <RiArrowDownSLine className={`h-4 w-4 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`} />
         </div>
       </div>
@@ -162,9 +174,29 @@ export default function Payments() {
 
   return (
     <div className="space-y-5">
-      <div>
-        <h1 className="text-xl font-bold">Payments</h1>
-        <p className="text-sm text-muted-foreground">Track and manage tuition fees</p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h1 className="text-xl font-bold">Payments</h1>
+          <p className="text-sm text-muted-foreground">Track and manage tuition fees</p>
+        </div>
+        {stats.overdueCount > 0 && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="shrink-0 border-destructive/40 text-destructive hover:bg-destructive/10 hover:text-destructive"
+            onClick={() => {
+              const overdueItems = enriched.filter(({ payment }) => payment.status === "overdue");
+              overdueItems.forEach(({ student, payment, session }) => {
+                if (!student) return;
+                const msg = `Hi ${student.parentName}, gentle reminder that payment of ${formatCurrency(payment.amount)} for ${student.name}'s ${student.subject} session on ${formatDate(session?.date)} is outstanding. Thank you!`;
+                window.open(`https://wa.me/65${student.parentPhone}?text=${encodeURIComponent(msg)}`, "_blank");
+              });
+            }}
+          >
+            <RiMessage2Line className="h-4 w-4" />
+            Chase {stats.overdueCount} Overdue
+          </Button>
+        )}
       </div>
 
       {/* Summary cards */}

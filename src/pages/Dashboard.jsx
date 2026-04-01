@@ -263,7 +263,7 @@ export default function Dashboard() {
                 return (
                   <div key={payment.id} className="flex items-center gap-3">
                     <Avatar className="h-8 w-8">
-                      <AvatarFallback className="text-xs bg-red-50 text-red-600">{student ? getInitials(student.name) : "?"}</AvatarFallback>
+                      <AvatarFallback className="text-xs">{student ? getInitials(student.name) : "?"}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{student?.name || "Unknown"}</p>
