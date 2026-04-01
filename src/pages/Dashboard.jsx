@@ -1,27 +1,30 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, PieChart, Pie, Cell } from "recharts";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend,
-} from "recharts";
-import { Users, CalendarDays, CreditCard, TrendingUp, Clock, AlertCircle } from "lucide-react";
+  RiGroupLine, RiCalendarLine, RiBankCardLine,
+  RiLineChartLine, RiTimeLine, RiAlertLine,
+} from "@remixicon/react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { students as studentStore, sessions as sessionStore, payments as paymentStore } from "@/lib/storage";
 import { formatCurrency, formatDate, formatTime, getInitials, getCurrentMonthRange } from "@/lib/utils";
 
-const STATUS_COLORS = {
-  paid: "#22c55e",
-  pending: "#f59e0b",
-  overdue: "#ef4444",
-  waived: "#94a3b8",
+const earningsConfig = {
+  amount: { label: "Earnings (SGD)", color: "var(--primary)" },
 };
 
-const CHART_COLORS = ["#3b82f6", "#22c55e", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"];
+const paymentStatusConfig = {
+  paid: { label: "Paid", color: "#3b4fd8" },
+  pending: { label: "Pending", color: "#6b7ff0" },
+  overdue: { label: "Overdue", color: "#a5aefc" },
+  waived: { label: "Waived", color: "#d0d5fd" },
+};
 
-function StatCard({ title, value, sub, icon: Icon, color = "text-primary", trend }) {
+function StatCard({ title, value, sub, icon: Icon }) {
   return (
     <Card>
       <CardContent className="p-5">
@@ -31,7 +34,7 @@ function StatCard({ title, value, sub, icon: Icon, color = "text-primary", trend
             <p className="text-2xl font-bold mt-1">{value}</p>
             {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
           </div>
-          <div className={`p-2 rounded-lg bg-primary/10 ${color}`}>
+          <div className="p-2 rounded-lg bg-muted text-muted-foreground">
             <Icon className="h-5 w-5" />
           </div>
         </div>
@@ -113,26 +116,24 @@ export default function Dashboard() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <StatCard title="Students" value={allStudents.length} sub="Active this month" icon={Users} />
+        <StatCard title="Students" value={allStudents.length} sub="Active this month" icon={RiGroupLine} />
         <StatCard
           title="Sessions This Month"
           value={completedThisMonth.length}
           sub={`${thisMonthSessions.length} total scheduled`}
-          icon={CalendarDays}
+          icon={RiCalendarLine}
         />
         <StatCard
           title="Earnings (MTD)"
           value={formatCurrency(totalEarnings)}
           sub="This month, paid"
-          icon={TrendingUp}
-          color="text-green-600"
+          icon={RiLineChartLine}
         />
         <StatCard
           title="Pending Collection"
           value={formatCurrency(pendingAmount)}
           sub={overdueCount > 0 ? `${overdueCount} overdue` : "All on time"}
-          icon={CreditCard}
-          color={overdueCount > 0 ? "text-red-500" : "text-amber-500"}
+          icon={RiBankCardLine}
         />
       </div>
 
@@ -144,18 +145,15 @@ export default function Dashboard() {
             <CardDescription>Last 6 months</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={200}>
+            <ChartContainer config={earningsConfig} className="h-[200px] w-full">
               <BarChart data={earningsChart} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="month" tick={{ fontSize: 12 }} />
-                <YAxis tick={{ fontSize: 12 }} />
-                <Tooltip
-                  formatter={(val) => [`$${val}`, "Earnings"]}
-                  contentStyle={{ borderRadius: 8, fontSize: 13 }}
-                />
-                <Bar dataKey="amount" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                <XAxis dataKey="month" tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+                <YAxis tickLine={false} axisLine={false} tick={{ fontSize: 12 }} />
+                <ChartTooltip content={<ChartTooltipContent formatter={(val) => [`$${val}`, ""]} />} />
+                <Bar dataKey="amount" fill="var(--color-amount)" radius={[4, 4, 0, 0]} />
               </BarChart>
-            </ResponsiveContainer>
+            </ChartContainer>
           </CardContent>
         </Card>
 
@@ -165,25 +163,40 @@ export default function Dashboard() {
             <CardDescription>All sessions</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={200}>
+            <ChartContainer config={paymentStatusConfig} className="h-[160px] w-full">
               <PieChart>
                 <Pie
                   data={paymentPie}
                   cx="50%"
-                  cy="45%"
-                  innerRadius={50}
-                  outerRadius={75}
+                  cy="50%"
+                  innerRadius={45}
+                  outerRadius={68}
                   paddingAngle={3}
                   dataKey="value"
+                  nameKey="name"
                 >
-                  {paymentPie.map((entry, i) => (
-                    <Cell key={entry.name} fill={STATUS_COLORS[entry.name.toLowerCase()] || CHART_COLORS[i]} />
+                  {paymentPie.map((entry) => (
+                    <Cell
+                      key={entry.name}
+                      fill={paymentStatusConfig[entry.name.toLowerCase()]?.color}
+                    />
                   ))}
                 </Pie>
-                <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 12 }} />
-                <Tooltip contentStyle={{ borderRadius: 8, fontSize: 13 }} />
+                <ChartTooltip content={<ChartTooltipContent nameKey="name" />} />
               </PieChart>
-            </ResponsiveContainer>
+            </ChartContainer>
+            {/* Inline legend matching the dot pattern */}
+            <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 mt-2">
+              {paymentPie.map((entry) => (
+                <div key={entry.name} className="flex items-center gap-1.5">
+                  <span
+                    className="h-2 w-2 rounded-full shrink-0"
+                    style={{ backgroundColor: paymentStatusConfig[entry.name.toLowerCase()]?.color }}
+                  />
+                  <span className="text-xs text-muted-foreground">{entry.name} · {entry.value}</span>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -231,7 +244,7 @@ export default function Dashboard() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 text-red-500" />
+                <RiAlertLine className="h-4 w-4 text-muted-foreground" />
                 Overdue Payments
               </CardTitle>
               <Link to="/payments">

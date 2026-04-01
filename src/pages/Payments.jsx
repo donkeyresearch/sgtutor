@@ -1,5 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
-import { Check, Clock, AlertCircle, ChevronDown, ExternalLink, DollarSign } from "lucide-react";
+import {
+  RiCheckLine, RiTimeLine, RiAlertLine,
+  RiArrowDownSLine, RiExternalLinkLine, RiMoneyDollarCircleLine,
+} from "@remixicon/react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +36,7 @@ function PaymentRow({ payment, session, student, onMarkPaid }) {
         <div className="flex items-center gap-2 shrink-0">
           <span className="text-sm font-bold">{formatCurrency(payment.amount)}</span>
           <Badge variant={payment.status}>{payment.status}</Badge>
-          <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`} />
+          <RiArrowDownSLine className={`h-4 w-4 text-muted-foreground transition-transform ${expanded ? "rotate-180" : ""}`} />
         </div>
       </div>
 
@@ -56,11 +59,10 @@ function PaymentRow({ payment, session, student, onMarkPaid }) {
             <div className="flex gap-2">
               <Button
                 size="sm"
-                variant="success"
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                className="flex-1"
                 onClick={(e) => { e.stopPropagation(); onMarkPaid(payment); }}
               >
-                <Check className="h-3.5 w-3.5" />
+                <RiCheckLine className="h-3.5 w-3.5" />
                 Mark as Paid
               </Button>
               <Button
@@ -75,7 +77,7 @@ function PaymentRow({ payment, session, student, onMarkPaid }) {
                   }
                 }}
               >
-                <ExternalLink className="h-3.5 w-3.5" />
+                <RiExternalLinkLine className="h-3.5 w-3.5" />
                 Chase via WA
               </Button>
             </div>
@@ -167,24 +169,33 @@ export default function Payments() {
 
       {/* Summary cards */}
       <div className="grid grid-cols-3 gap-3">
-        <Card className="bg-green-50 border-green-100">
+        <Card>
           <CardContent className="p-4">
-            <p className="text-xs text-green-700 font-medium">Collected (MTD)</p>
-            <p className="text-lg font-bold text-green-800 mt-1">{formatCurrency(stats.paid)}</p>
+            <div className="flex items-center gap-1.5 mb-2">
+              <span className="h-2 w-2 rounded-full bg-primary shrink-0" />
+              <p className="text-[11px] text-muted-foreground font-medium">Collected</p>
+            </div>
+            <p className="text-lg font-bold">{formatCurrency(stats.paid)}</p>
           </CardContent>
         </Card>
-        <Card className="bg-amber-50 border-amber-100">
+        <Card>
           <CardContent className="p-4">
-            <p className="text-xs text-amber-700 font-medium">Pending</p>
-            <p className="text-lg font-bold text-amber-800 mt-1">{formatCurrency(stats.pending)}</p>
+            <div className="flex items-center gap-1.5 mb-2">
+              <span className="h-2 w-2 rounded-full bg-amber-400 shrink-0" />
+              <p className="text-[11px] text-muted-foreground font-medium">Pending</p>
+            </div>
+            <p className="text-lg font-bold">{formatCurrency(stats.pending)}</p>
           </CardContent>
         </Card>
-        <Card className="bg-red-50 border-red-100">
+        <Card>
           <CardContent className="p-4">
-            <p className="text-xs text-red-700 font-medium">Overdue</p>
-            <p className="text-lg font-bold text-red-800 mt-1">{formatCurrency(stats.overdue)}</p>
+            <div className="flex items-center gap-1.5 mb-2">
+              <span className="h-2 w-2 rounded-full bg-destructive shrink-0" />
+              <p className="text-[11px] text-muted-foreground font-medium">Overdue</p>
+            </div>
+            <p className="text-lg font-bold">{formatCurrency(stats.overdue)}</p>
             {stats.overdueCount > 0 && (
-              <p className="text-[10px] text-red-600 mt-0.5">{stats.overdueCount} sessions</p>
+              <p className="text-[10px] text-muted-foreground mt-0.5">{stats.overdueCount} sessions</p>
             )}
           </CardContent>
         </Card>
@@ -206,8 +217,8 @@ export default function Payments() {
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium truncate">{student.name}</p>
                   <div className="flex items-center gap-1.5 text-xs shrink-0">
-                    <span className="text-green-600 font-semibold">{formatCurrency(total)}</span>
-                    {pending > 0 && <span className="text-amber-500">+{formatCurrency(pending)}</span>}
+                    <span className="font-semibold">{formatCurrency(total)}</span>
+                    {pending > 0 && <span className="text-muted-foreground">+{formatCurrency(pending)}</span>}
                   </div>
                 </div>
                 <div className="mt-1 h-1.5 rounded-full bg-muted overflow-hidden">
@@ -247,7 +258,7 @@ export default function Payments() {
         <div className="space-y-2">
           {filtered.length === 0 ? (
             <div className="text-center py-10 text-muted-foreground">
-              <DollarSign className="h-8 w-8 mx-auto mb-2 opacity-30" />
+              <RiMoneyDollarCircleLine className="h-8 w-8 mx-auto mb-2 opacity-30" />
               <p className="text-sm">No payments in this category</p>
             </div>
           ) : (
@@ -289,7 +300,7 @@ export default function Payments() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setMarkingPaid(null)}>Cancel</Button>
             <Button onClick={handleMarkPaid} className="bg-green-600 hover:bg-green-700 text-white">
-              <Check className="h-4 w-4" />
+              <RiCheckLine className="h-4 w-4" />
               Confirm Paid
             </Button>
           </DialogFooter>

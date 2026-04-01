@@ -1,13 +1,16 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { LayoutDashboard, Users, CalendarDays, CreditCard, MessageSquare, GraduationCap } from "lucide-react";
+import {
+  RiDashboardLine, RiGroupLine, RiCalendarLine,
+  RiBankCardLine, RiMessage2Line, RiGraduationCapLine,
+} from "@remixicon/react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { to: "/", icon: LayoutDashboard, label: "Dashboard" },
-  { to: "/students", icon: Users, label: "Students" },
-  { to: "/schedule", icon: CalendarDays, label: "Schedule" },
-  { to: "/payments", icon: CreditCard, label: "Payments" },
-  { to: "/messages", icon: MessageSquare, label: "Messages" },
+  { to: "/", icon: RiDashboardLine, label: "Dashboard" },
+  { to: "/students", icon: RiGroupLine, label: "Students" },
+  { to: "/schedule", icon: RiCalendarLine, label: "Schedule" },
+  { to: "/payments", icon: RiBankCardLine, label: "Payments" },
+  { to: "/messages", icon: RiMessage2Line, label: "Messages" },
 ];
 
 function SidebarLink({ to, icon: Icon, label }) {
@@ -61,7 +64,7 @@ export default function Layout({ children }) {
         {/* Logo */}
         <div className="flex items-center gap-2.5 px-5 py-5 border-b border-border">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <GraduationCap className="h-4 w-4 text-white" />
+            <RiGraduationCapLine className="h-4 w-4 text-white" />
           </div>
           <div>
             <p className="font-semibold text-sm leading-none">SGTutor</p>
@@ -87,7 +90,7 @@ export default function Layout({ children }) {
         {/* Mobile header */}
         <header className="flex md:hidden items-center gap-2.5 px-4 py-3 border-b border-border bg-background sticky top-0 z-30">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-            <GraduationCap className="h-4 w-4 text-white" />
+            <RiGraduationCapLine className="h-4 w-4 text-white" />
           </div>
           <p className="font-semibold text-sm">SGTutor</p>
         </header>

@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { Send, Plus, Edit, Trash2, Copy, Check, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  RiSendPlaneLine, RiAddLine, RiEditLine, RiDeleteBinLine,
+  RiFileCopyLine, RiCheckLine, RiMessage2Line,
+  RiArrowDownSLine, RiArrowUpSLine,
+} from "@remixicon/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -69,7 +73,7 @@ function TemplateCard({ template, students, onEdit, onDelete }) {
           </div>
           <div className="flex gap-1 shrink-0">
             <Button variant="ghost" size="icon-sm" onClick={() => onEdit(template)}>
-              <Edit className="h-3.5 w-3.5" />
+              <RiEditLine className="h-3.5 w-3.5" />
             </Button>
             <Button
               variant="ghost"
@@ -77,7 +81,7 @@ function TemplateCard({ template, students, onEdit, onDelete }) {
               className="text-destructive hover:text-destructive hover:bg-destructive/10"
               onClick={() => onDelete(template)}
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <RiDeleteBinLine className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>
@@ -90,7 +94,7 @@ function TemplateCard({ template, students, onEdit, onDelete }) {
         >
           <div className="flex items-center justify-between mb-1">
             <span className="font-medium text-foreground text-[11px]">Template</span>
-            {expanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+            {expanded ? <RiArrowUpSLine className="h-3 w-3" /> : <RiArrowDownSLine className="h-3 w-3" />}
           </div>
           {expanded ? (
             <p className="whitespace-pre-line">{template.body}</p>
@@ -130,7 +134,7 @@ function TemplateCard({ template, students, onEdit, onDelete }) {
         {/* Actions */}
         <div className="flex gap-2">
           <Button variant="outline" size="sm" className="flex-1 text-xs" onClick={handleCopy}>
-            {copied ? <Check className="h-3.5 w-3.5 text-green-600" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? <RiCheckLine className="h-3.5 w-3.5 text-green-600" /> : <RiFileCopyLine className="h-3.5 w-3.5" />}
             {copied ? "Copied!" : "Copy"}
           </Button>
           <Button
@@ -140,7 +144,7 @@ function TemplateCard({ template, students, onEdit, onDelete }) {
             disabled={!student}
             onClick={handleSend}
           >
-            <Send className="h-3.5 w-3.5" />
+            <RiSendPlaneLine className="h-3.5 w-3.5" />
             Send via WA
           </Button>
         </div>
@@ -236,14 +240,14 @@ export default function Messages() {
           <p className="text-sm text-muted-foreground">WhatsApp templates for parents</p>
         </div>
         <Button size="sm" onClick={() => setShowAdd(true)}>
-          <Plus className="h-4 w-4" />
+          <RiAddLine className="h-4 w-4" />
           New Template
         </Button>
       </div>
 
       {/* Info banner */}
       <div className="flex items-start gap-2.5 rounded-xl bg-green-50 border border-green-100 p-3.5">
-        <MessageSquare className="h-5 w-5 text-[#25D366] shrink-0 mt-0.5" />
+        <RiMessage2Line className="h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
         <div>
           <p className="text-sm font-medium text-green-800">One-tap WhatsApp sending</p>
           <p className="text-xs text-green-600 mt-0.5">Select a student to preview the message, then tap "Send via WA" to open WhatsApp with the parent's number and message pre-filled.</p>
@@ -253,7 +257,7 @@ export default function Messages() {
       {/* Templates grid */}
       {templateList.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground">
-          <MessageSquare className="h-10 w-10 mx-auto mb-3 opacity-30" />
+          <RiMessage2Line className="h-10 w-10 mx-auto mb-3 opacity-30" />
           <p className="font-medium">No templates yet</p>
           <p className="text-sm mt-1">Create your first message template</p>
         </div>
