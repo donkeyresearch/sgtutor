@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import {
-  RiAddLine, RiSearchLine, RiPhoneLine, RiBookOpenLine,
+  RiAddLine, RiSearchLine, RiPhoneLine,
   RiDeleteBinLine, RiEditLine, RiMessage2Line, RiGroupLine,
 } from "@remixicon/react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ResponsiveDialog } from "@/components/ui/responsive-dialog";
-import { students as studentStore, sessions as sessionStore } from "@/lib/storage";
+import { students as studentStore } from "@/lib/storage";
 import { formatCurrency, getInitials, getWhatsAppUrl } from "@/lib/utils";
 
 const SUBJECTS = ["Mathematics", "English", "Science", "Physics", "Chemistry", "Biology", "Chinese", "History", "Geography", "Literature", "Economics", "Additional Mathematics"];
@@ -70,13 +70,10 @@ function StudentForm({ initial, onSave, onCancel }) {
 }
 
 function StudentCard({ student, onEdit, onDelete }) {
-  const allSess = sessionStore.getByStudent(student.id);
-  const completedCount = allSess.filter((s) => s.status === "completed").length;
-
   return (
     <Card>
       <CardContent className="p-5">
-        {/* Top row: avatar + name + actions */}
+        {/* Top row: avatar + name + edit/delete */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <Avatar className="h-10 w-10 shrink-0">
@@ -85,33 +82,17 @@ function StudentCard({ student, onEdit, onDelete }) {
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              <p className="font-semibold text-sm truncate">{student.name}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">{student.subject} · {student.level}</p>
+              <p className="font-semibold truncate">{student.name}</p>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {student.subject} · {student.level} · <span className="text-foreground font-medium">{formatCurrency(student.ratePerHour)}/hr</span>
+              </p>
             </div>
           </div>
           <div className="flex items-center gap-0.5 shrink-0">
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="text-muted-foreground hover:text-foreground"
-              onClick={() => window.open(getWhatsAppUrl(student.parentPhone, `Hi ${student.parentName}!`), "_blank")}
-            >
-              <RiMessage2Line className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="text-muted-foreground hover:text-foreground"
-              onClick={() => onEdit(student)}
-            >
+            <Button variant="ghost" size="icon-sm" className="text-muted-foreground hover:text-foreground" onClick={() => onEdit(student)}>
               <RiEditLine className="h-4 w-4" />
             </Button>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              className="text-muted-foreground hover:text-foreground"
-              onClick={() => onDelete(student)}
-            >
+            <Button variant="ghost" size="icon-sm" className="text-muted-foreground hover:text-foreground" onClick={() => onDelete(student)}>
               <RiDeleteBinLine className="h-4 w-4" />
             </Button>
           </div>
@@ -120,26 +101,23 @@ function StudentCard({ student, onEdit, onDelete }) {
         {/* Divider */}
         <div className="h-px bg-border my-4" />
 
-        {/* Stats row */}
-        <div className="grid grid-cols-3 gap-3 text-center">
-          <div>
-            <p className="text-base font-semibold">{allSess.length}</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Sessions</p>
+        {/* Parent contact row with WA button */}
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <RiPhoneLine className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+            <div className="min-w-0">
+              <p className="text-[11px] text-muted-foreground leading-none mb-0.5">Parent</p>
+              <p className="text-sm truncate">{student.parentName} · {student.parentPhone}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-base font-semibold">{completedCount}</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Completed</p>
-          </div>
-          <div>
-            <p className="text-base font-semibold">{formatCurrency(student.ratePerHour)}</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Per hour</p>
-          </div>
-        </div>
-
-        {/* Parent contact */}
-        <div className="mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
-          <RiPhoneLine className="h-3.5 w-3.5 shrink-0" />
-          <span className="truncate">{student.parentName} · {student.parentPhone}</span>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            className="text-muted-foreground hover:text-foreground shrink-0"
+            onClick={() => window.open(getWhatsAppUrl(student.parentPhone, `Hi ${student.parentName}!`), "_blank")}
+          >
+            <RiMessage2Line className="h-4 w-4" />
+          </Button>
         </div>
       </CardContent>
     </Card>
