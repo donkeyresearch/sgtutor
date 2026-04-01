@@ -9,9 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription,
-} from "@/components/ui/dialog";
+import { ResponsiveDialog } from "@/components/ui/responsive-dialog";
 import { students as studentStore, sessions as sessionStore } from "@/lib/storage";
 import { formatCurrency, getInitials, getWhatsAppUrl } from "@/lib/utils";
 
@@ -197,40 +195,38 @@ export default function Students() {
         </div>
       )}
 
-      <Dialog open={showAdd} onOpenChange={setShowAdd}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add New Student</DialogTitle>
-            <DialogDescription>Fill in the student and parent details.</DialogDescription>
-          </DialogHeader>
-          <StudentForm onSave={(form) => { studentStore.create(form); load(); setShowAdd(false); }} onCancel={() => setShowAdd(false)} />
-        </DialogContent>
-      </Dialog>
+      <ResponsiveDialog
+        open={showAdd}
+        onOpenChange={setShowAdd}
+        title="Add New Student"
+        description="Fill in the student and parent details."
+      >
+        <StudentForm onSave={(form) => { studentStore.create(form); load(); setShowAdd(false); }} onCancel={() => setShowAdd(false)} />
+      </ResponsiveDialog>
 
-      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Student</DialogTitle>
-            <DialogDescription>Update student information.</DialogDescription>
-          </DialogHeader>
-          {editing && <StudentForm initial={editing} onSave={(form) => { studentStore.update(editing.id, form); load(); setEditing(null); }} onCancel={() => setEditing(null)} />}
-        </DialogContent>
-      </Dialog>
+      <ResponsiveDialog
+        open={!!editing}
+        onOpenChange={(o) => !o && setEditing(null)}
+        title="Edit Student"
+        description="Update student information."
+      >
+        {editing && <StudentForm initial={editing} onSave={(form) => { studentStore.update(editing.id, form); load(); setEditing(null); }} onCancel={() => setEditing(null)} />}
+      </ResponsiveDialog>
 
-      <Dialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Remove student?</DialogTitle>
-            <DialogDescription>
-              <strong>{deleting?.name}</strong> and all their session data will be permanently removed.
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
+      <ResponsiveDialog
+        open={!!deleting}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        title="Remove student?"
+        description={deleting ? `${deleting.name} and all their session data will be permanently removed.` : ""}
+        footer={
+          <>
             <Button variant="outline" onClick={() => setDeleting(null)}>Cancel</Button>
             <Button variant="destructive" onClick={() => { studentStore.delete(deleting.id); load(); setDeleting(null); }}>Remove</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </>
+        }
+      >
+        <div />
+      </ResponsiveDialog>
     </div>
   );
 }

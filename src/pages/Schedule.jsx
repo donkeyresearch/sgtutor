@@ -6,7 +6,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { DialogFooter } from "@/components/ui/dialog";
+import { ResponsiveDialog } from "@/components/ui/responsive-dialog";
+import { DatePicker } from "@/components/ui/date-picker";
 import { sessions as sessionStore, students as studentStore, payments as paymentStore } from "@/lib/storage";
 import { formatCurrency, getWeekDates } from "@/lib/utils";
 import { cn } from "@/lib/utils";
@@ -91,7 +93,7 @@ function SessionForm({ initial, students, onSave, onCancel }) {
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <Label>Date *</Label>
-          <Input type="date" value={form.date} onChange={set("date")} required />
+          <DatePicker value={form.date} onChange={(v) => setForm((f) => ({ ...f, date: v }))} />
         </div>
         <div className="space-y-1.5">
           <Label>Duration *</Label>
@@ -310,54 +312,54 @@ export default function Schedule() {
       </div>
 
       {/* Add modal */}
-      <Dialog open={showAdd} onOpenChange={setShowAdd}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add Session</DialogTitle>
-            <DialogDescription>Schedule a new tuition session.</DialogDescription>
-          </DialogHeader>
-          <SessionForm
-            initial={prefilledDate ? { studentId: "", date: prefilledDate, time: "10:00", duration: "1", status: "upcoming", notes: "" } : null}
-            students={allStudents}
-            onSave={handleAdd}
-            onCancel={() => setShowAdd(false)}
-          />
-        </DialogContent>
-      </Dialog>
+      <ResponsiveDialog
+        open={showAdd}
+        onOpenChange={setShowAdd}
+        title="Add Session"
+        description="Schedule a new tuition session."
+      >
+        <SessionForm
+          initial={prefilledDate ? { studentId: "", date: prefilledDate, time: "10:00", duration: "1", status: "upcoming", notes: "" } : null}
+          students={allStudents}
+          onSave={handleAdd}
+          onCancel={() => setShowAdd(false)}
+        />
+      </ResponsiveDialog>
 
       {/* Edit modal */}
-      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Session</DialogTitle>
-            <DialogDescription>Update session details.</DialogDescription>
-          </DialogHeader>
-          {editing && (
-            <>
-              <SessionForm initial={editing} students={allStudents} onSave={handleEdit} onCancel={() => setEditing(null)} />
-              <div className="mt-2">
-                <Button variant="outline" size="sm" className="w-full text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => { setDeleting(editing); setEditing(null); }}>
-                  Delete Session
-                </Button>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+      <ResponsiveDialog
+        open={!!editing}
+        onOpenChange={(o) => !o && setEditing(null)}
+        title="Edit Session"
+        description="Update session details."
+      >
+        {editing && (
+          <>
+            <SessionForm initial={editing} students={allStudents} onSave={handleEdit} onCancel={() => setEditing(null)} />
+            <div className="mt-2 mb-2">
+              <Button variant="outline" size="sm" className="w-full text-destructive border-destructive/30 hover:bg-destructive/10" onClick={() => { setDeleting(editing); setEditing(null); }}>
+                Delete Session
+              </Button>
+            </div>
+          </>
+        )}
+      </ResponsiveDialog>
 
       {/* Delete confirm */}
-      <Dialog open={!!deleting} onOpenChange={(o) => !o && setDeleting(null)}>
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle>Delete session?</DialogTitle>
-            <DialogDescription>This session and its payment record will be removed.</DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
+      <ResponsiveDialog
+        open={!!deleting}
+        onOpenChange={(o) => !o && setDeleting(null)}
+        title="Delete session?"
+        description="This session and its payment record will be removed."
+        footer={
+          <>
             <Button variant="outline" onClick={() => setDeleting(null)}>Cancel</Button>
             <Button variant="destructive" onClick={() => { sessionStore.delete(deleting.id); load(); setDeleting(null); }}>Delete</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+          </>
+        }
+      >
+        <div />
+      </ResponsiveDialog>
     </div>
   );
 }
