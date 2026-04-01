@@ -35,7 +35,7 @@ function SidebarLink({ to, icon: Icon, label }) {
 
 function BottomNav() {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-background border-t border-border flex md:hidden safe-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-background border-t border-border flex items-stretch">
       {navItems.map(({ to, icon: Icon, label }) => (
         <NavLink
           key={to}
@@ -43,13 +43,19 @@ function BottomNav() {
           end={to === "/"}
           className={({ isActive }) =>
             cn(
-              "flex flex-1 flex-col items-center justify-center gap-1 py-2 text-[10px] font-medium transition-colors",
+              "flex flex-1 flex-col items-center justify-center gap-1 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))] transition-colors",
               isActive ? "text-primary" : "text-muted-foreground"
             )
           }
         >
-          <Icon className="h-5 w-5" />
-          {label}
+          {({ isActive }) => (
+            <>
+              <Icon className={cn("h-[22px] w-[22px] transition-transform", isActive && "scale-110")} />
+              <span className={cn("text-[10px] font-medium leading-none", isActive ? "text-primary" : "text-muted-foreground")}>
+                {label}
+              </span>
+            </>
+          )}
         </NavLink>
       ))}
     </nav>

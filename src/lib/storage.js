@@ -84,6 +84,19 @@ export const payments = {
     );
     saveAll(KEYS.payments, list);
   },
+  // Auto-escalate pending payments whose session date has passed to overdue
+  syncOverdue: () => {
+    const today = new Date().toISOString().split("T")[0];
+    const allSessions = getAll(KEYS.sessions);
+    const sessionDateMap = Object.fromEntries(allSessions.map((s) => [s.id, s.date]));
+    const list = getAll(KEYS.payments).map((p) => {
+      if (p.status !== "pending") return p;
+      const sessionDate = sessionDateMap[p.sessionId];
+      if (sessionDate && sessionDate < today) return { ...p, status: "overdue" };
+      return p;
+    });
+    saveAll(KEYS.payments, list);
+  },
 };
 
 // ─── Templates ───────────────────────────────────────────────────────────────

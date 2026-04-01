@@ -6,11 +6,12 @@ import Students from "@/pages/Students";
 import Schedule from "@/pages/Schedule";
 import Payments from "@/pages/Payments";
 import Messages from "@/pages/Messages";
-import { initSeedData } from "@/lib/storage";
+import { initSeedData, payments } from "@/lib/storage";
 
 export default function App() {
   useEffect(() => {
     initSeedData();
+    payments.syncOverdue();
   }, []);
 
   return (
